@@ -7,22 +7,22 @@
 #### Subscribe [K8s Data Management](https://www.youtube.com/channel/UCm-sw1b23K-scoVSCDo30YQ?sub_confirmation=1) Youtube Channel
 
 # OCP on IBM Automation
-## Go -> [ocp-ibm-k10](https://github.com/yongkanghe/ocp-k10/tree/main/ocp-ibm-k10)
+## Go -> [ocp-ibm-k10](https://github.com/Coku/ocp-k10/tree/main/ocp-ibm-k10)
 
 1 command in 45 minutes to build a ready-to-use Kasten demo environment on Red Hat OpenShift with OCS on IBM Cloud (OCP+OCS+MongoDB+K10).
 
 # ROSA on AWS Automation
-## Go -> [rosa-k10](https://github.com/yongkanghe/ocp-k10/tree/main/rosa-k10)
+## Go -> [rosa-k10](https://github.com/Coku2015/ocp-k10/tree/main/rosa-k10)
 
 3 minutes to protect containers on a running ROSA cluster (MongoDB+K10+Policy+Backup).
 
 # ARO on Azure Automation
-## Go -> [aro-k10](https://github.com/yongkanghe/ocp-k10/tree/main/aro-k10)
+## Go -> [aro-k10](https://github.com/Coku2015/ocp-k10/tree/main/aro-k10)
 
 3 minutes to protect containers on a running ARO cluster (Postgresql+K10+Policy+Backup).
 
 # OCP on AWS Automation
-## Go -> [ocp-aws-k10](https://github.com/yongkanghe/ocp-k10/tree/main/ocp-aws-k10)
+## Go -> [ocp-aws-k10](https://github.com/Coku2015/ocp-k10/tree/main/ocp-aws-k10)
 
 3 minutes to protect containers on a running self-managed OCP cluster on AWS (Postgresql+K10+Policy+Backup).
 
