@@ -75,6 +75,10 @@ Display_Selection(){
         echo
         echo -e "${COLOR_GREEN}You will install K10/MySQL/Object Storage.${COLOR_END}"
         ;;
+    7)
+        echo
+        echo -e "${COLOR_GREEN}You will destory everything.${COLOR_END}"
+        ;;
     [eE][xX][iI][tT])
         echo -e "${COLOR_GREEN}You select <Exit>, shell exit now!${COLOR_END}"
         exit 1
