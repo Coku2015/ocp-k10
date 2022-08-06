@@ -90,17 +90,20 @@ check_k10_installed(){
     k10_installed_flag=""
     postgressql_installed_flag=""
     mysql_installed_flag=""
-    if [[ "$(kubectl get ns kasten-io | grep kasten-io | awk '{print $1}')"]]; then
+    check_k10=$(kubectl get ns kasten-io | grep kasten-io | awk '{print $1}')
+    check_pgsql=$(kubectl get ns my-postgresql | grep my-postgresql | awk '{print $1}')
+    check_mysql=$(kubectl get ns my-mysql | grep my-mysql | awk '{print $1}')
+    if [[ "${check_k10}" == "kasten-io" ]]; then
         k10_installed_flag="true"
     else
         k10_installed_flag="false"
     fi
-    if [[ "$(kubectl get ns my-postgresql | grep my-postgresql | awk '{print $1}')"]]; then
+    if [[ "${check_pgsql}" == "my-postgresql" ]]; then
         postgressql_installed_flag="true"
     else
         postgressql_installed_flag="false"
     fi
-    if [[ "$(kubectl get ns my-postgresql | grep my-postgresql | awk '{print $1}')"]]; then
+    if [[ "${check_mysql}" == "my-mysql" ]]; then
         mysql_installed_flag="true"
     else
         mysql_installed_flag="false"
