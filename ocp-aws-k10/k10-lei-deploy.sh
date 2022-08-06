@@ -203,7 +203,7 @@ destroy(){
         kubectl delete ns my-postgresql
     fi
     if [ "${mysql_installed_flag}" == "true" ]; then
-        helm uninstall postgres -n my-mysql
+        helm uninstall mysql-release -n my-mysql
         kubectl delete ns my-mysql
     fi
     echo "" | awk '{print $1}'
