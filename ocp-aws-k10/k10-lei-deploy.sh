@@ -253,8 +253,6 @@ setsc
 clearscreen
 Display_Selection
 Press_Install
-{
-    check_helm
-    check_k10_installed
-} &> /dev/null
+check_helm
+check_k10_installed
 main_installer
