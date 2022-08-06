@@ -94,9 +94,9 @@ check_k10_installed(){
     k10_installed_flag=""
     postgressql_installed_flag=""
     mysql_installed_flag=""
-    check_k10=$(kubectl get ns kasten-io | grep kasten-io | awk '{print $1}')
+    check_k10=$(kubectl get ns kasten-io | grep kasten-io | awk '{print $1}' > /dev/null)
     check_pgsql=$(kubectl get ns my-postgresql | grep my-postgresql | awk '{print $1}')
-    check_mysql=$(kubectl get ns my-mysql | grep my-mysql | awk '{print $1}')
+    check_mysql=$(kubectl get ns my-mysql | grep my-mysql | awk '{print $1}' > /dev/null)
     if [[ "${check_k10}" == "kasten-io" ]]; then
         k10_installed_flag="true"
     else
@@ -253,6 +253,8 @@ setsc
 clearscreen
 Display_Selection
 Press_Install
-check_helm
-check_k10_installed
+{
+    check_helm
+    check_k10_installed
+} &> /dev/null
 main_installer
