@@ -91,9 +91,9 @@ Display_Selection(){
 }
 
 check_k10_installed(){
-    k10_installed_flag="$(kubectl get ns kasten-io | grep kasten-io | awk '{print $1}' &> /dev/null && echo true || echo false)"
-    postgressql_installed_flag="$(kubectl get ns my-postgresql | grep my-postgresql | awk '{print $1}' &> /dev/null && echo true || echo false)"
-    mysql_installed_flag="$(kubectl get ns my-mysql | grep my-mysql | awk '{print $1}' &> /dev/null && echo true || echo false)"
+    k10_installed_flag="$(kubectl get ns kasten-io &> /dev/null && echo true || echo false)"
+    postgressql_installed_flag="$(kubectl get ns my-postgresql &> /dev/null && echo true || echo false)"
+    mysql_installed_flag="$(kubectl get ns my-mysql &> /dev/null && echo true || echo false)"
 }
 
 setsc(){
