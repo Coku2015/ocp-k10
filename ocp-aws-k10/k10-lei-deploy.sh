@@ -196,8 +196,8 @@ destroy(){
 }
 
 check_helm(){
-    which helm
-    if [ `echo $?` -eq 1 ]; then
+    has_helm="$(which helm &> /dev/null && echo true || echo false)"
+    if [ ${has_helm} = "false" ]; then
         wget https://get.helm.sh/helm-v3.7.1-linux-amd64.tar.gz
         tar zxf helm-v3.7.1-linux-amd64.tar.gz
         mkdir ~/bin
