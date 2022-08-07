@@ -239,30 +239,7 @@ create_location_profile(){
 
     echo $OCP_AWS_MY_BUCKET-$(date +%s)$RANDOM > k10_ocp_aws_bucketname
 
-    cat <<EOF | kubectl apply -f -
-    kind: Profile
-    apiVersion: config.kio.kasten.io/v1alpha1
-    metadata:
-      name: ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}
-      namespace: kasten-io
-    spec:
-      locationSpec:
-        type: ObjectStore
-        objectStore:
-          endpoint: s3.ap-southeast-1.wasabisys.com
-          name: ${OCP_AWS_MY_BUCKET}
-          objectStoreType: S3
-          region: ${OCP_AWS_MY_REGION}
-        credential:
-          secretType: AwsAccessKey
-          secret:
-            apiVersion: v1
-            kind: secret
-            name: k10-s3-secret
-            namespace: kasten-io
-      type: Location
-    EOF
-
+    kubectl apply -f ocp-s3-location.yaml
 }
 
 main_installer(){
