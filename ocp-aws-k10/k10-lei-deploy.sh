@@ -1,6 +1,12 @@
 #! /bin/bash
 contact_us=lei.wei@veeam.com
 
+#-------Set the environment variables"
+export OCP_AWS_MY_REGION=ap-southeast-1          #Customize your favorite region
+export OCP_AWS_MY_BUCKET=k10-openshift-lei    #Customize your favorite bucket
+export OCP_AWS_MY_OBJECT_STORAGE_PROFILE=wasabi #Customize your favorite profile name
+
+
 fun_set_text_color(){
     COLOR_RED='\E[1;31m'
     COLOR_GREEN='\E[1;32m'
@@ -48,7 +54,7 @@ Display_Selection(){
     echo "5: Install K10/PostgreSQL/Object Storage"
     echo "6: Install K10/MySQL/Object Storage"
     echo "7: Uninstall everything."
-    read -p "Enter your choice (1-6 or exit. default [${def_Install_Select}]): " Install_Select
+    read -p "Enter your choice (1-7 or exit. default [${def_Install_Select}]): " Install_Select
 
     case "${Install_Select}" in
     1)
@@ -213,6 +219,52 @@ check_helm(){
     helm repo update
 }
 
+create_location_profile(){
+    echo -n "Enter your AWS Access Key ID and press [ENTER]: "
+    read AWS_ACCESS_KEY_ID
+    echo "" | awk '{print $1}'
+    echo $AWS_ACCESS_KEY_ID > awsaccess
+    echo -n "Enter your AWS Secret Access Key and press [ENTER]: "
+    read AWS_SECRET_ACCESS_KEY
+    echo $AWS_SECRET_ACCESS_KEY >> awsaccess
+    export AWS_ACCESS_KEY_ID=$(cat awsaccess | head -1)
+    export AWS_SECRET_ACCESS_KEY=$(cat awsaccess | tail -1)
+
+    echo '-------Creating a S3 profile secret'
+    kubectl create secret generic k10-s3-secret \
+      --namespace kasten-io \
+      --type secrets.kanister.io/aws \
+      --from-literal=aws_access_key_id=$(cat awsaccess | head -1) \
+      --from-literal=aws_secret_access_key=$(cat awsaccess | tail -1)
+
+    echo $OCP_AWS_MY_BUCKET-$(date +%s)$RANDOM > k10_ocp_aws_bucketname
+
+    cat <<EOF | kubectl apply -f -
+    kind: Profile
+    apiVersion: config.kio.kasten.io/v1alpha1
+    metadata:
+      name: ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}
+      namespace: kasten-io
+    spec:
+      locationSpec:
+        type: ObjectStore
+        objectStore:
+          endpoint: s3.ap-southeast-1.wasabisys.com
+          name: ${OCP_AWS_MY_BUCKET}
+          objectStoreType: S3
+          region: ${OCP_AWS_MY_REGION}
+        credential:
+          secretType: AwsAccessKey
+          secret:
+            apiVersion: v1
+            kind: secret
+            name: k10-s3-secret
+            namespace: kasten-io
+      type: Location
+    EOF
+
+}
+
 main_installer(){
     if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
         if [ "${k10_installed_flag}" == "false" ]; then
@@ -228,6 +280,9 @@ main_installer(){
         if [ "${mysql_installed_flag}" == "false" ]; then
             installmysql
         fi
+    fi
+    if [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
+        create_location_profile
     fi
     if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
         get_k10_installed_detail
