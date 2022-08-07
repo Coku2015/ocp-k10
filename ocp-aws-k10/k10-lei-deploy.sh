@@ -205,6 +205,8 @@ check_helm(){
         rm helm-v3.7.1-linux-amd64.tar.gz 
         rm -rf linux-amd64 
         export PATH=$PATH:~/bin
+    else
+        echo "Helm is already installed."
     fi
     helm repo add kasten https://charts.kasten.io
     helm repo add bitnami https://charts.bitnami.com/bitnami
