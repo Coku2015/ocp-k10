@@ -230,14 +230,20 @@ check_helm(){
 }
 
 main_installer(){
-    if [ "${k10_installed_flag}" == "false" ] || [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
-        installk10
+    if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
+        if [ "${k10_installed_flag}" == "false" ]； then
+            installk10
+        fi
     fi
-    if [ "${postgressql_installed_flag}" == "false" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "5" ]; then
-        installpgsql
+    if [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "5" ]; then
+        if [ "${postgressql_installed_flag}" == "false" ]; then
+            installpgsql
+        fi
     fi
-    if [ "${mysql_installed_flag}" == "false" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "6" ]; then
-        installmysql
+    if [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "6" ]; then
+        if [ "${mysql_installed_flag}" == "false" ]; then
+            installmysql
+        fi
     fi
     if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
         get_k10_installed_detail
