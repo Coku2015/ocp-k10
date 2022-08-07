@@ -231,7 +231,7 @@ check_helm(){
 
 main_installer(){
     if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
-        if [ "${k10_installed_flag}" == "false" ]； then
+        if [ "${k10_installed_flag}" == "false" ]; then
             installk10
         fi
     fi
