@@ -6,21 +6,9 @@ export OCP_AWS_MY_REGION=ap-southeast-1          #Customize your favorite region
 export OCP_AWS_MY_BUCKET=k10-openshift-lei    #Customize your favorite bucket
 export OCP_AWS_MY_OBJECT_STORAGE_PROFILE=wasabi #Customize your favorite profile name
 
-
-fun_set_text_color(){
-    COLOR_RED='\E[1;31m'
-    COLOR_GREEN='\E[1;32m'
-    COLOR_YELOW='\E[1;33m'
-    COLOR_BLUE='\E[1;34m'
-    COLOR_PINK='\E[1;35m'
-    COLOR_PINKBACK_WHITEFONT='\033[45;37m'
-    COLOR_GREEN_LIGHTNING='\033[32m \033[05m'
-    COLOR_END='\E[0m'
-}
-
 Press_Install(){
     echo ""
-    echo -e "${COLOR_GREEN}Press any key to install...or Press Ctrl+c to cancel${COLOR_END}"
+    echo -e "Press any key to continue...or Press Ctrl+c to cancel"
     OLDCONFIG=`stty -g`
     stty -icanon -echo min 1 time 0
     dd count=1 2>/dev/null
@@ -46,7 +34,7 @@ clearscreen(){
 
 Display_Selection(){
     def_Install_Select="1"
-    echo -e "${COLOR_YELOW}You have 6 options for your K10 installation.${COLOR_END}"
+    echo -e "You have 6 options for your K10 installation."
     echo "1: Install K10 only"
     echo "2: Install K10 and PostgreSQL"
     echo "3: Install K10 and MySQL"
@@ -59,39 +47,39 @@ Display_Selection(){
     case "${Install_Select}" in
     1)
         echo
-        echo -e "${COLOR_GREEN}You will install K10.${COLOR_END}"
+        echo -e "You will install K10."
         ;;
     2)
         echo
-        echo -e "${COLOR_GREEN}You will install K10 and PostgreSQL.${COLOR_END}"
+        echo -e "You will install K10 and PostgreSQL."
         ;;
     3)
         echo
-        echo -e "${COLOR_GREEN}You will install K10 and MySQL.${COLOR_END}"
+        echo -e "You will install K10 and MySQL."
         ;;
     4)
         echo
-        echo -e "${COLOR_GREEN}You will install K10 and configure object storage.${COLOR_END}"
+        echo -e "You will install K10 and configure object storage."
         ;;
     5)
         echo
-        echo -e "${COLOR_GREEN}You will install K10/PostgreSQL/Object Storage.${COLOR_END}"
+        echo -e "You will install K10/PostgreSQL/Object Storage."
         ;;
     6)
         echo
-        echo -e "${COLOR_GREEN}You will install K10/MySQL/Object Storage.${COLOR_END}"
+        echo -e "You will install K10/MySQL/Object Storage."
         ;;
     7)
         echo
-        echo -e "${COLOR_GREEN}You will destory everything.${COLOR_END}"
+        echo -e "You will destory everything."
         ;;
     [eE][xX][iI][tT])
-        echo -e "${COLOR_GREEN}You select <Exit>, shell exit now!${COLOR_END}"
+        echo -e "You select <Exit>, shell exit now!"
         exit 1
         ;;
     *)
         echo
-        echo -e "${COLOR_GREEN}No input,You will install k10 only.${COLOR_END}"
+        echo -e "No input,You will install k10 only."
         Install_Select="${def_Install_Select}"
     esac
 }
@@ -219,6 +207,16 @@ check_helm(){
     helm repo update
 }
 
+check_yq(){
+    has_yq="$(which yq &> /dev/null && echo true || echo false)"
+    if [ ${has_yq} = "false" ]; then
+        wget https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64 -O ~/bin/yq 
+        chmod +x /bin/yq
+    else
+        echo "yq is already installed."
+    fi
+}
+
 create_location_profile(){
     echo -n "Enter your AWS Access Key ID and press [ENTER]: "
     read AWS_ACCESS_KEY_ID
@@ -269,9 +267,17 @@ main_installer(){
     fi
 }
 
-starttime=$(date +%s)
+#prepare env
+if [ -e ~/ran]; then
+    echo ""
+else
+    setsc
+    check_helm
+    check_yq
+    touch ~/ran
+fi
 
-setsc
+starttime=$(date +%s)
 clearscreen
 Display_Selection
 Press_Install
