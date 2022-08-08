@@ -247,7 +247,7 @@ update_yaml(){
     .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT}
     .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET}
     .spec.locationSpec.objectStore.region = ${OCP_AWS_MY_REGION}
-    'ocp-s3-location.yaml
+    ' ocp-s3-location.yaml
 }
 
 main_installer(){
