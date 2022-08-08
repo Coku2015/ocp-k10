@@ -278,7 +278,7 @@ main_installer(){
 }
 
 #prepare env
-if [ -e ~/ran]; then
+if [ -e ~/ran ]; then
     echo ""
 else
     setsc
