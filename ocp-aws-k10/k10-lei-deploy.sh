@@ -2,9 +2,10 @@
 contact_us=lei.wei@veeam.com
 
 #-------Set the environment variables"
-export OCP_AWS_MY_REGION=ap-southeast-1          #Customize your favorite region
-export OCP_AWS_MY_BUCKET=k10-openshift-lei    #Customize your favorite bucket
-export OCP_AWS_MY_OBJECT_STORAGE_PROFILE=wasabi #Customize your favorite profile name
+OCP_AWS_MY_REGION="ap-southeast-1"        #Customize your favorite region
+OCP_AWS_MY_BUCKET="k10-openshift-lei"    #Customize your favorite bucket
+OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi" #Customize your favorite profile name
+OCP_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
 
 Press_Install(){
     echo ""
@@ -211,7 +212,7 @@ check_yq(){
     has_yq="$(which yq &> /dev/null && echo true || echo false)"
     if [ ${has_yq} = "false" ]; then
         wget https://github.com/mikefarah/yq/releases/download/v4.27.2/yq_linux_amd64 -O ~/bin/yq 
-        chmod +x /bin/yq
+        chmod +x ~/bin/yq
     else
         echo "yq is already installed."
     fi
@@ -236,8 +237,17 @@ create_location_profile(){
       --from-literal=aws_secret_access_key=$(cat awsaccess | tail -1)
 
     echo $OCP_AWS_MY_BUCKET-$(date +%s)$RANDOM > k10_ocp_aws_bucketname
-
+    update_yaml
     kubectl apply -f ocp-s3-location.yaml
+}
+
+update_yaml(){
+    yq -i '
+    .metadata.name = ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}
+    .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT}
+    .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET}
+    .spec.locationSpec.objectStore.region = ${OCP_AWS_MY_REGION}
+    'ocp-s3-location.yaml
 }
 
 main_installer(){
