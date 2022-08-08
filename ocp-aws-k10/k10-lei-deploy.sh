@@ -219,12 +219,10 @@ check_yq(){
 }
 
 create_location_profile(){
-    echo -n "Enter your AWS Access Key ID and press [ENTER]: "
-    read AWS_ACCESS_KEY_ID
+    read -p "Enter your AWS Access Key ID and press [ENTER]: " AWS_ACCESS_KEY_ID
     echo "" | awk '{print $1}'
     echo $AWS_ACCESS_KEY_ID > awsaccess
-    echo -n "Enter your AWS Secret Access Key and press [ENTER]: "
-    read AWS_SECRET_ACCESS_KEY
+    read -p "Enter your AWS Secret Access Key and press [ENTER]: " AWS_SECRET_ACCESS_KEY
     echo $AWS_SECRET_ACCESS_KEY >> awsaccess
     export AWS_ACCESS_KEY_ID=$(cat awsaccess | head -1)
     export AWS_SECRET_ACCESS_KEY=$(cat awsaccess | tail -1)
@@ -243,10 +241,10 @@ create_location_profile(){
 
 update_yaml(){
     yq -i '
-    .metadata.name = ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} |
-    .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT} |
-    .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET} |
-    .spec.locationSpec.objectStore.region = ${OCP_AWS_MY_REGION}
+    .metadata.name = strenv(OCP_AWS_MY_OBJECT_STORAGE_PROFILE) |
+    .spec.locationSpec.objectStore.endpoint = strenv(OCP_ENDPOINT) |
+    .spec.locationSpec.objectStore.name = strenv(OCP_AWS_MY_BUCKET) |
+    .spec.locationSpec.objectStore.region = strenv(OCP_AWS_MY_REGION)
     ' ocp-s3-location.yaml
 }
 
