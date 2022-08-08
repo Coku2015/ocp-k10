@@ -243,9 +243,9 @@ create_location_profile(){
 
 update_yaml(){
     yq -i '
-    .metadata.name = ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}
-    .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT}
-    .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET}
+    .metadata.name = ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} |
+    .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT} |
+    .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET} |
     .spec.locationSpec.objectStore.region = ${OCP_AWS_MY_REGION}
     ' ocp-s3-location.yaml
 }
