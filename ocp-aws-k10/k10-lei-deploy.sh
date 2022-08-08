@@ -1,7 +1,7 @@
 #! /bin/bash
 contact_us=lei.wei@veeam.com
 OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi"
-OCP_AWS_MY_BUCKET="k10-openshift-lei"
+OCP_AWS_MY_BUCKET="k10-openshift-lei-$(randstr)"
 OCP_AWS_MY_REGION="ap-southeast-1"
 OCP_AWS_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
 
@@ -83,6 +83,16 @@ Display_Selection(){
     esac
 }
 
+randstr(){
+	index=0
+	strRandomPass=""
+	for i in {a..z}; do arr[index]=$i; index=`expr ${index} + 1`; done
+	for i in {A..Z}; do arr[index]=$i; index=`expr ${index} + 1`; done
+	for i in {0..9}; do arr[index]=$i; index=`expr ${index} + 1`; done
+	for i in {1..4}; do strRandomPass="$strRandomPass${arr[$RANDOM%$index]}"; done
+	echo $strRandomPass
+}
+
 check_k10_installed(){
     k10_installed_flag="$(kubectl get ns kasten-io &> /dev/null && echo true || echo false)"
     postgressql_installed_flag="$(kubectl get ns my-postgresql &> /dev/null && echo true || echo false)"
@@ -99,15 +109,7 @@ setsc(){
 installk10(){
     echo '-------Install K10'
     kubectl create ns kasten-io
-    #For Production, remove the lines ending with =1Gi from helm install
-    #For Production, remove the lines ending with airgap from helm install
     helm install k10 kasten/k10 --namespace=kasten-io \
-        --set global.persistence.metering.size=1Gi \
-        --set prometheus.server.persistentVolume.size=1Gi \
-        --set global.persistence.catalog.size=1Gi \
-        --set global.persistence.jobs.size=1Gi \
-        --set global.persistence.logging.size=1Gi \
-        --set global.persistence.grafana.size=1Gi \
         --set scc.create=true \
         --set route.enabled=true \
         --set auth.tokenAuth.enabled=true \
@@ -181,11 +183,20 @@ destroy(){
         helm uninstall mysql-release -n my-mysql
         kubectl delete ns my-mysql
     fi
+    remove_bucket
     echo "" | awk '{print $1}'
     endtime=$(date +%s)
     duration=$(( $endtime - $starttime ))
     echo "-------Total time is $(($duration / 60)) minutes $(($duration % 60)) seconds."
     echo "" | awk '{print $1}'
+}
+
+remove_bucket(){
+    mc alias set ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} https://${OCP_AWS_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} --api S3v4
+    mc ls ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${OCP_AWS_MY_BUCKET} >/dev/null 2>&1
+    if [ ${?} -eq 0 ];
+        mc rb ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${OCP_AWS_MY_BUCKET} --force
+    fi
 }
 
 check_helm(){
@@ -213,6 +224,16 @@ check_yq(){
         chmod +x ~/bin/yq
     else
         echo "yq is already installed."
+    fi
+}
+
+check_mc(){
+    has_mc="$(which mc &> /dev/null && echo true || echo false)"
+    if [ ${has_mc} = "false" ]; then
+        wget https://dl.min.io/client/mc/release/linux-amd64/mc -O ~/bin/mc
+        chmod +x ~/bin/mc
+    else
+        echo "mc is already installed."
     fi
 }
 
@@ -279,6 +300,7 @@ else
     setsc
     check_helm
     check_yq
+    check_mc
     touch ~/ran
 fi
 
@@ -286,6 +308,5 @@ starttime=$(date +%s)
 clearscreen
 Display_Selection
 Press_Install
-check_helm
 check_k10_installed
 main_installer
