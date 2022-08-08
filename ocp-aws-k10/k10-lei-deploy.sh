@@ -26,7 +26,7 @@ clearscreen(){
     echo "+-----------------------------------------------------------------+"
     echo "|                      1 key k10 demo script                      |"
     echo "+----------------------------------------------------------------+"
-    echo "| A tool to help you create automate k10 installation in 3 minutes|"
+    echo "|   A tool to help you install k10 demo environment in 3 minutes  |"
     echo "+-----------------------------------------------------------------+"
     echo "|  Intro: ${contact_us}                           |"
     echo "+-----------------------------------------------------------------+"
