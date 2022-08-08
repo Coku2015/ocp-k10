@@ -1,12 +1,6 @@
 #! /bin/bash
 contact_us=lei.wei@veeam.com
 
-#-------Set the environment variables"
-OCP_AWS_MY_REGION="ap-southeast-1"        #Customize your favorite region
-OCP_AWS_MY_BUCKET="k10-openshift-lei"    #Customize your favorite bucket
-OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi" #Customize your favorite profile name
-OCP_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
-
 Press_Install(){
     echo ""
     echo -e "Press any key to continue...or Press Ctrl+c to cancel"
@@ -240,6 +234,11 @@ create_location_profile(){
 }
 
 update_yaml(){
+    #-------Set the environment variables"
+    OCP_AWS_MY_REGION="ap-southeast-1"        #Customize your favorite region
+    OCP_AWS_MY_BUCKET="k10-openshift-lei"    #Customize your favorite bucket
+    OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi" #Customize your favorite profile name
+    OCP_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
     yq -i '.metadata.name = ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} | .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT} | .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET} | .spec.locationSpec.objectStore.region = ${OCP_AWS_MY_REGION}' ocp-s3-location.yaml
 }
 
