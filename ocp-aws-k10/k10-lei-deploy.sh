@@ -1,5 +1,9 @@
 #! /bin/bash
 contact_us=lei.wei@veeam.com
+OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi"
+OCP_AWS_MY_BUCKET="k10-openshift-lei"
+OCP_AWS_MY_REGION="ap-southeast-1"
+OCP_AWS_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
 
 Press_Install(){
     echo ""
@@ -234,12 +238,11 @@ create_location_profile(){
 }
 
 update_yaml(){
-    #-------Set the environment variables"
-    OCP_AWS_MY_REGION="ap-southeast-1"        #Customize your favorite region
-    OCP_AWS_MY_BUCKET="k10-openshift-lei"    #Customize your favorite bucket
-    OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi" #Customize your favorite profile name
-    OCP_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
-    yq -i '.metadata.name = ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} | .spec.locationSpec.objectStore.endpoint = ${OCP_ENDPOINT} | .spec.locationSpec.objectStore.name = ${OCP_AWS_MY_BUCKET} | .spec.locationSpec.objectStore.region = ${OCP_AWS_MY_REGION}' ocp-s3-location.yaml
+    YML_REGION=${OCP_AWS_MY_REGION} YML_BUCKET=${OCP_AWS_MY_BUCKET} YML_PROFILE=${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} YML_ENDPOINT=${OCP_AWS_ENDPOINT} yq -i '.metadata.name = strenv(YML_PROFILE) | 
+    .spec.locationSpec.objectStore.endpoint = strenv(YML_ENDPOINT) | 
+    .spec.locationSpec.objectStore.name = strenv(YML_BUCKET) | 
+    .spec.locationSpec.objectStore.region = strenv(YML_REGION)
+    ' ocp-s3-location.yaml
 }
 
 main_installer(){
