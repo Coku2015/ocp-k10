@@ -1,10 +1,5 @@
 #! /bin/bash
 contact_us=lei.wei@veeam.com
-OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi"
-ran_str=`randstr`
-OCP_AWS_MY_BUCKET="k10-openshift-lei-${ran_str}"
-OCP_AWS_MY_REGION="ap-southeast-1"
-OCP_AWS_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
 
 Press_Install(){
     echo ""
@@ -193,10 +188,13 @@ destroy(){
 }
 
 remove_bucket(){
+    REMOVE_BUCKET="$(yq '.spec.locationSpec.objectStore.name' ocp-s3-location.yaml)"
+    export AWS_ACCESS_KEY_ID=$(cat awsaccess | head -1)
+    export AWS_SECRET_ACCESS_KEY=$(cat awsaccess | tail -1)
     mc alias set ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} https://${OCP_AWS_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} --api S3v4
-    mc ls ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${OCP_AWS_MY_BUCKET} >/dev/null 2>&1
+    mc ls ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${REMOVE_BUCKET} >/dev/null 2>&1
     if [ ${?} -eq 0 ]; then
-        mc rb ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${OCP_AWS_MY_BUCKET} --force
+        mc rb ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${REMOVE_BUCKET} --force
     fi
 }
 
@@ -254,7 +252,6 @@ create_location_profile(){
       --from-literal=aws_access_key_id=$(cat awsaccess | head -1) \
       --from-literal=aws_secret_access_key=$(cat awsaccess | tail -1)
 
-    echo $OCP_AWS_MY_BUCKET-$(date +%s)$RANDOM > k10_ocp_aws_bucketname
     update_yaml
     kubectl apply -f ocp-s3-location.yaml
 }
@@ -293,6 +290,12 @@ main_installer(){
         destroy
     fi
 }
+
+OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi"
+ran_str=`randstr`
+OCP_AWS_MY_BUCKET="k10-openshift-lei-${ran_str}"
+OCP_AWS_MY_REGION="ap-southeast-1"
+OCP_AWS_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
 
 #prepare env
 if [ -e ~/ran ]; then
