@@ -1,7 +1,8 @@
 #! /bin/bash
 contact_us=lei.wei@veeam.com
 OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi"
-OCP_AWS_MY_BUCKET="k10-openshift-lei-$(randstr)"
+ran_str=`randstr`
+OCP_AWS_MY_BUCKET="k10-openshift-lei-${ran_str}"
 OCP_AWS_MY_REGION="ap-southeast-1"
 OCP_AWS_ENDPOINT="s3.ap-southeast-1.wasabisys.com"
 
@@ -194,7 +195,7 @@ destroy(){
 remove_bucket(){
     mc alias set ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} https://${OCP_AWS_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} --api S3v4
     mc ls ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${OCP_AWS_MY_BUCKET} >/dev/null 2>&1
-    if [ ${?} -eq 0 ];
+    if [ ${?} -eq 0 ]; then
         mc rb ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${OCP_AWS_MY_BUCKET} --force
     fi
 }
