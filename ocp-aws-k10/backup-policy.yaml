@@ -1,0 +1,44 @@
+apiVersion: config.kio.kasten.io/v1alpha1
+kind: Policy
+metadata:
+  name: $BACKUP_POLICY_NAME
+  namespace: kasten-io
+spec:
+  comment: ""
+  frequency: "@hourly"
+  actions:
+    - action: backup
+      backupParameters:
+        profile:
+          namespace: kasten-io
+          name: $OCP_AWS_MY_OBJECT_STORAGE_PROFILE
+    - action: export
+      exportParameters:
+        frequency: "@hourly"
+        migrationToken:
+          name: ""
+          namespace: ""
+        profile:
+          name: $OCP_AWS_MY_OBJECT_STORAGE_PROFILE
+          namespace: kasten-io
+        receiveString: ""
+        exportData:
+          enabled: true
+      retention:
+        hourly: 0
+        daily: 0
+        weekly: 0
+        monthly: 0
+        yearly: 0
+  retention:
+    hourly: 4
+    daily: 1
+    weekly: 1
+    monthly: 0
+    yearly: 0
+  selector:
+    matchExpressions:
+      - key: k10.kasten.io/appNamespace
+        operator: In
+        values:
+          - $NAMESPACE
