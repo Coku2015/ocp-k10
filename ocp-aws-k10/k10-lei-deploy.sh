@@ -280,11 +280,11 @@ main_installer(){
             installmysql
         fi
     fi
-    if [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
-        create_location_profile
-    fi
     if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
         get_k10_installed_detail
+    fi
+    if [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
+        create_location_profile
     fi
     if [ "${Install_Select}" == "7" ]; then
         destroy
