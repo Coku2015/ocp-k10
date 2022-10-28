@@ -127,7 +127,7 @@ installpgsql(){
 installmysql(){
     echo '-------Deploying a MySQL database'
     kubectl create namespace my-mysql
-    oc adm policy add-scc-to-user anyuid -z default -n my-mysql
+    oc adm policy add-scc-to-user anyuid -z mysql-release -n my-mysql
     helm install --namespace my-mysql mysql-release bitnami/mysql \
     --set primary.persistence.size=1Gi
 }
