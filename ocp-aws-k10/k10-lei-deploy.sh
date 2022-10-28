@@ -203,7 +203,7 @@ create_bucket(){
     export AWS_ACCESS_KEY_ID=$(cat awsaccess | head -1)
     export AWS_SECRET_ACCESS_KEY=$(cat awsaccess | tail -1)
     mc alias set ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE} https://${OCP_AWS_ENDPOINT} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY} --api S3v4 
-    mc mb ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${REMOVE_BUCKET}
+    mc mb ${OCP_AWS_MY_OBJECT_STORAGE_PROFILE}/${ADD_BUCKET}
 }
 
 check_helm(){
@@ -259,7 +259,7 @@ create_location_profile(){
       --type secrets.kanister.io/aws \
       --from-literal=aws_access_key_id=$(cat awsaccess | head -1) \
       --from-literal=aws_secret_access_key=$(cat awsaccess | tail -1)
-      
+
     update_yaml
     create_bucket
     kubectl apply -f ocp-s3-location.yaml
