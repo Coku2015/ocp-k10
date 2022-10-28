@@ -165,7 +165,6 @@ get_k10_installed_detail(){
 }
 
 destroy(){
-    starttime=$(date +%s)
     if [ "${k10_installed_flag}" == "true" ]; then
         helm uninstall k10 -n kasten-io
         kubectl delete ns kasten-io
@@ -179,11 +178,6 @@ destroy(){
         kubectl delete ns my-mysql
     fi
     remove_bucket
-    echo "" | awk '{print $1}'
-    endtime=$(date +%s)
-    duration=$(( $endtime - $starttime ))
-    echo "-------Total time is $(($duration / 60)) minutes $(($duration % 60)) seconds."
-    echo "" | awk '{print $1}'
 }
 
 remove_bucket(){
@@ -273,6 +267,7 @@ update_yaml(){
 }
 
 main_installer(){
+    starttime=$(date +%s)
     if [ "${Install_Select}" == "1" ] || [ "${Install_Select}" == "2" ] || [ "${Install_Select}" == "3" ] || [ "${Install_Select}" == "4" ] || [ "${Install_Select}" == "5" ] || [ "${Install_Select}" == "6" ]; then
         if [ "${k10_installed_flag}" == "false" ]; then
             installk10
@@ -297,6 +292,11 @@ main_installer(){
     if [ "${Install_Select}" == "7" ]; then
         destroy
     fi
+    echo "" | awk '{print $1}'
+    endtime=$(date +%s)
+    duration=$(( $endtime - $starttime ))
+    echo "-------Total time is $(($duration / 60)) minutes $(($duration % 60)) seconds."
+    echo "" | awk '{print $1}'
 }
 
 OCP_AWS_MY_OBJECT_STORAGE_PROFILE="wasabi"
